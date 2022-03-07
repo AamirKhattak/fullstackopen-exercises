@@ -1,0 +1,9 @@
+title EX: 0.6: New note (FullStackOpen)
+
+
+note over browser:
+onsubmit, browser saves data in browser and
+redraw notes, also post data to server for storage
+end note
+
+browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
