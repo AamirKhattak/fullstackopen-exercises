@@ -89,7 +89,7 @@ const App = () => {
       .remove(id)
       .then((response) => {
         setPersons(persons.filter((per) => per.id !== id));
-        handleNotification(`${tobeDeletedPerson.name} has been deleted`, 'success');
+        handleNotification(`${tobeDeletedPerson.name} has been deleted`);
       })
       .catch((error) => {
         setPersons(persons.filter((per) => per.id !== id));
