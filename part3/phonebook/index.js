@@ -23,6 +23,8 @@ let phonebook = [
 
 app.use(express.json());
 
+const generateId = () => Math.floor(Math.random() * 100000)
+
 app.get("/", (req, res) => {
     res.send("<h1>Hello World!</h1>");
 });
@@ -49,12 +51,39 @@ app.get("/api/persons/:id", (req, res) => {
     res.json(personFound);
 });
 
-app.delete('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id)
-    phonebook = phonebook.filter(per => per.id !== id);
-    res.status(204).end()
-  })
+app.delete("/api/persons/:id", (req, res) => {
+    const id = Number(req.params.id);
+    phonebook = phonebook.filter((per) => per.id !== id);
+    res
+        .status(204)
+        .end();
+});
 
+app.post("/api/persons", (req, res)=>{
+
+    const body = req.body;
+    console.log(req);
+    
+
+    if(!(body.name || body.number)){
+        console.log(body);
+        
+        return res.status(400).json({ 
+            error: 'content missing' 
+          })
+    }
+
+    const newPerson = {
+        name: body.name,
+        number: body.number,
+        id: generateId()
+    }
+
+    phonebook = phonebook.concat(newPerson);
+
+    res.json(newPerson);
+
+});
 
 const PORT = 3001;
 app.listen(PORT, () => {
