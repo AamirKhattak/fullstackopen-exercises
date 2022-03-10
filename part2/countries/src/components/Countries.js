@@ -1,12 +1,15 @@
+import React from "react";
 import Weather from "./Weather";
 
 const Country = ({country}) => {
     // const country = countries[0];
+    console.log(country);
     const name = country.name.common;
     const capital = country.capital[0];
     const area = country.area;
     const languages = country.languages;
     const flag = country.flags.png;
+    const capitalLatlng = country.capitalInfo.latlng;
 
     return (
       <div>
@@ -22,7 +25,7 @@ const Country = ({country}) => {
           ))}
         </ul>
         <img style={{borderStyle:"solid", borderColor:"black"}} src={flag} />
-        <Weather capitalName={capital} />
+        <Weather capital={{name: capital, latlng: capitalLatlng}} />
       </div>
     );
 }
