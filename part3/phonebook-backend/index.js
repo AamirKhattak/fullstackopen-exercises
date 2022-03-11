@@ -1,5 +1,6 @@
 const express = require("express");
 var morgan = require("morgan");
+const cors = require("cors")
 
 const app = express();
 
@@ -27,6 +28,7 @@ let phonebook = [
 ];
 
 app.use(express.json());
+app.use(cors());
 
 //###########################################################<start> MORGAN LOGGING
 //using tiny config, for all methods except POST
