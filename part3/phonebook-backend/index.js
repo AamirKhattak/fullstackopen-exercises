@@ -1,6 +1,8 @@
 const express = require("express");
 const app = express();
 
+var morgan = require("morgan")
+
 let phonebook = [
   {
     id: 1,
@@ -24,7 +26,26 @@ let phonebook = [
   },
 ];
 
+
+// const requestLogger = (request, response, next) => {
+//   console.log('Method:', request.method)
+//   console.log('Path:  ', request.path)
+//   console.log('Body:  ', request.body)
+//   console.log('res Body:  ', response.da)
+//   console.log('---')
+//   next()
+// }
+
 app.use(express.json());
+// app.use(morgan('tiny'))
+morgan.token('body', (req, res) => {
+  return JSON.stringify(req.body);
+})
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
+
+// app.use(requestLogger)
+
+
 
 const generateId = () => Math.floor(Math.random() * 100000);
 
@@ -68,6 +89,12 @@ app.post("/api/persons", (req, res) => {
   phonebook = phonebook.concat(newPerson);
   res.json(newPerson);
 });
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
+}
+
+app.use(unknownEndpoint)
 
 const PORT = 3001;
 app.listen(PORT, () => {
