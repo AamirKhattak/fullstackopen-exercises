@@ -1,29 +1,36 @@
 const express = require("express");
 var morgan = require("morgan");
-const cors = require("cors")
-require('dotenv').config()
-const Phonebook = require('./models/phonebook')
+const cors = require("cors");
+require("dotenv").config();
+const Phonebook = require("./models/phonebook");
 
+/**
+ * TODO: HEROKU configuration to be check after completion of all the excercise
+ * TODO: 3.16 3.16: Phonebook database, step4
+ */
 const app = express();
 
 let phonebook = [
-    {
-        id: 1,
-        name: "Arto Hellas",
-        number: "040-123456"
-    }, {
-        id: 2,
-        name: "Ada Lovelace",
-        number: "39-44-5323523"
-    }, {
-        id: 3,
-        name: "Dan Abramov",
-        number: "12-43-234345"
-    }, {
-        id: 4,
-        name: "Mary Poppendieck",
-        number: "39-23-6423122"
-    }
+  {
+    id: 1,
+    name: "Arto Hellas",
+    number: "040-123456",
+  },
+  {
+    id: 2,
+    name: "Ada Lovelace",
+    number: "39-44-5323523",
+  },
+  {
+    id: 3,
+    name: "Dan Abramov",
+    number: "12-43-234345",
+  },
+  {
+    id: 4,
+    name: "Mary Poppendieck",
+    number: "39-23-6423122",
+  },
 ];
 
 app.use(express.json());
@@ -31,18 +38,23 @@ app.use(cors());
 
 // ###########################################################<start> MORGAN
 // LOGGING using tiny config, for all methods except POST
-app.use(morgan("tiny", {
-    skip: (req, res) => req.method === "POST"
-}));
+app.use(
+  morgan("tiny", {
+    skip: (req, res) => req.method === "POST",
+  })
+);
 
 morgan.token("body", (req, res) => {
-    return JSON.stringify(req.body);
+  return JSON.stringify(req.body);
 });
 //only to log POST requests
 app.use(
-    morgan(":method :url :status :res[content-length] - :response-time ms :body", {
-        skip: (req, res) => req.method !== "POST"
-    })
+  morgan(
+    ":method :url :status :res[content-length] - :response-time ms :body",
+    {
+      skip: (req, res) => req.method !== "POST",
+    }
+  )
 );
 // ###########################################################<end> MORGAN
 // LOGGING ###########################################################<start>
@@ -50,67 +62,74 @@ app.use(
 const generateId = () => Math.floor(Math.random() * 100000);
 
 app.get("/", (req, res) => {
-    res.send("<h1>Hello World!</h1>");
+  res.send("<h1>Hello World!</h1>");
 });
 
 app.get("/info", (req, res) => {
-    res.send(
-        `Phonebook has info for ${phonebook.length} people <br/><br/> ${new Date()}`
-    );
+  Phonebook.find({}).then((phonebook) => {
+    res.send(`Phonebook has info for ${phonebook.length} people <br/><br/> ${new Date()}`);
+  });
 });
 
 app.get("/api/persons", (req, res) => {
-    Phonebook
-        .find({})
-        .then(phonebook => {
-            res.json(phonebook);
-        })
+  Phonebook.find({}).then((phonebook) => {
+    res.json(phonebook);
+  });
 });
 
-app.get("/api/persons/:id", (req, res) => {
-    const id = Number(req.params.id);
-    const personFound = phonebook.find((per) => per.id === id);
-    if (!personFound) 
-        return res
-            .status(404)
-            .end();
-    
-    res.json(personFound);
+app.get("/api/persons/:id", (req, res, next) => {
+  const id = req.params.id;
+
+  Phonebook.findById(id)
+    .then((person) => {
+      if (person) res.json(person);
+      else res.status(404).end();
+    })
+    .catch((err) => next(err));
 });
 
-app.delete("/api/persons/:id", (req, res) => {
-    const id = Number(req.params.id);
-    phonebook = phonebook.filter((per) => per.id !== id);
-    res
-        .status(204)
-        .end();
+app.delete("/api/persons/:id", (req, res, next) => {
+  const id = req.params.id;
+  Phonebook.findByIdAndRemove(id)
+    .then((result) => {
+      res.status(204).end();
+    })
+    .catch((error) => next(error));
 });
 
 app.post("/api/persons", (req, res) => {
-    const body = req.body;
-    if (!(body.name && body.number)) {
-        return res
-            .status(400)
-            .json({error: "name or number is missing"});
-    } 
-    // else if (phonebook.find((per) => per.name === body.name)) {
-    //     return res
-    //         .status(400)
-    //         .json({error: "name already exists in the phonebook"});
-    // }
+  const body = req.body;
+  if (!(body.name && body.number)) {
+    return res.status(400).json({ error: "name or number is missing" });
+  }
+  // else if (phonebook.find((per) => per.name === body.name)) {     return res
+  // .status(400)         .json({error: "name already exists in the phonebook"});
+  // }
 
-    const newPerson = new Phonebook({
-      name: body.name,
-      number: body.number,
+  const newPerson = new Phonebook({ name: body.name, number: body.number });
+
+  newPerson.save().then((savedPerson) => res.json(savedPerson));
+});
+
+app.put("/api/persons/:id", (req, res, next) => {
+  const body = req.body;
+  if (!(body.name && body.number)) {
+    return res.status(400).json({ error: "name or number is missing" });
+  }
+
+  const persons = {
+    number: body.number,
+  };
+
+  Phonebook.findByIdAndUpdate(req.params.id, persons, { new: true })
+    .then((updatedPerson) => {
+      res.json(updatedPerson);
     })
-    
-    newPerson.save().then( savedPerson => res.json(savedPerson))
+    .catch((err) => next(err));
 });
 
 const unknownEndpoint = (request, response) => {
-    response
-        .status(404)
-        .send({error: "unknown endpoint"});
+  response.status(404).send({ error: "unknown endpoint" });
 };
 
 app.use(unknownEndpoint);
@@ -118,5 +137,5 @@ app.use(unknownEndpoint);
 
 const PORT = 3001;
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
