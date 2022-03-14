@@ -18,7 +18,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "server": "json-server -p3001 --watch data/db.json",
-    "build:ui": "shx rm -rf build && npm run build && shx cp -r build ../../phonebook-backend",
+    "build:ui": "shx rm -rf build && npm run build && shx cp -r build ../../part3/phonebook-backend",
     "clean": "shx rm -rf build dist && shx echo Done",
     "a":"cd part2/phonebook",
     "b":"cd ../../../phonebook-backend"
