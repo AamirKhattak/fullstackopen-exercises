@@ -92,9 +92,8 @@ const App = () => {
         handleNotification(`${tobeDeletedPerson.name} has been deleted`);
       })
       .catch((error) => {
-        setPersons(persons.filter((per) => per.id !== id));
-        console.log(tobeDeletedPerson);
-        handleNotification(`${tobeDeletedPerson[0].name} has been already deleted`);
+        console.log(error.response);
+        handleNotification(error.response.data.error);
       });
   };
 
