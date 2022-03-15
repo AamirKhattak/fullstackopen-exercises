@@ -70,3 +70,11 @@ module.exports = {
 ## Supertest `npm install --save-dev supertest`
 
 if the server is not already listening for connections then it is bound to an ephemeral port for you so there is no need to keep track of ports.
+
+# Running tests one by one
+
+`npm test -- tests/note_api.test.js`
+
+`npm test -- -t "a specific note is within the returned notes"`
+
+`npm test -- -t 'notes'`
