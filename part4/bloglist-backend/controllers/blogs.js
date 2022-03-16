@@ -21,12 +21,15 @@ blogRouter.get("/:id", async (request, response, next) => {
 
 blogRouter.post("/", async (request, response, next) => {
   const body = request.body;
-  
+  const { title, author, url, likes } = request.body;
+
+  if (!(title && url)) return response.status(400).end();
+
   const blog = new Blog({
-    title: body.title,
-    author: body.author,
-    url: body.url,
-    likes: body.likes? body.likes : 0,
+    title: title,
+    author: author,
+    url: url,
+    likes: likes ? likes : 0,
   });
 
   try {
@@ -47,12 +50,12 @@ blogRouter.delete("/:id", async (request, response, next) => {
 });
 
 blogRouter.put("/:id", async (request, response, next) => {
-  const blog = {
+  const blog = {};
 
-  };
-  
   try {
-    const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true });
+    const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, {
+      new: true,
+    });
     response.json(updatedBlog);
   } catch (exception) {
     next(exception);

@@ -12,7 +12,16 @@ beforeEach(async () => {
   await Blog.insertMany(helper.initialBlogs);
 });
 
-describe("blog-api", () => {
+describe("deletion of a blog", () => {
+  test("succeeds with status code 204 if id is valid", async () => {
+    const blogsAtStart = await helper.blogsInDb();
+    const blogToDelete = blogsAtStart[0];
+
+    await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+  });
+});
+
+describe("Get requests", () => {
   test("returns correct amount of blog posts in JSON format", async () => {
     const response = await api
       .get("/api/blogs")
@@ -26,7 +35,9 @@ describe("blog-api", () => {
     const response = await api.get("/api/blogs");
     response.body.map((blog) => expect(blog.id).toBeDefined());
   });
+});
 
+describe("POST requests", () => {
   test("HTTP POST request to the /api/blogs url successfully creates a new blog post & returns the desired object", async () => {
     const newBlog = {
       title: "fullstackopen-part4",
@@ -56,6 +67,14 @@ describe("blog-api", () => {
     delete savedBlog.id;
 
     expect({ likes: savedBlog.likes }).toEqual({ likes: 0 });
+  });
+
+  test("if the title and url properties are missing from the request data, the backend responds with bad request ", async () => {
+    const newBlog = {
+      title: "fullstackopen-part4(withoutlikes)",
+    };
+
+    await api.post("/api/blogs").send(newBlog).expect(400);
   });
 });
 
