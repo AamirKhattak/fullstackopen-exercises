@@ -21,6 +21,18 @@ describe("deletion of a blog", () => {
   });
 });
 
+describe('updation of a blog', () => {
+  test('updated blog has correct number of updated likes', async () => {
+    const blogsAtStart = await helper.blogsInDb();
+    const blogToUpdate = blogsAtStart[0];
+
+    const response = await api.put(`/api/blogs/${blogToUpdate.id}`).send({likes: 100})
+    const updatedBlog = response.body;
+    expect(updatedBlog.likes).toBe(100)
+  });
+  
+});
+
 describe("Get requests", () => {
   test("returns correct amount of blog posts in JSON format", async () => {
     const response = await api

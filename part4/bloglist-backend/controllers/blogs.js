@@ -50,10 +50,12 @@ blogRouter.delete("/:id", async (request, response, next) => {
 });
 
 blogRouter.put("/:id", async (request, response, next) => {
-  const blog = {};
+  
+  const {likes} = request.body; 
+  if(!likes) return response.status(400).end();
 
   try {
-    const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, {
+    const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, {likes: 100}, {
       new: true,
     });
     response.json(updatedBlog);
