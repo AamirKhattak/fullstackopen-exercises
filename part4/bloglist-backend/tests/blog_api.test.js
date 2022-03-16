@@ -27,7 +27,7 @@ describe("blog-api", () => {
     response.body.map((blog) => expect(blog.id).toBeDefined());
   });
 
-  test("HTTP POST request to the /api/blogs url successfully creates a new blog post", async () => {
+  test("HTTP POST request to the /api/blogs url successfully creates a new blog post & returns the desired object", async () => {
     const newBlog = {
       title: "fullstackopen-part4",
       author: "Uni of H",
@@ -39,9 +39,23 @@ describe("blog-api", () => {
     const savedBlog = response.body;
     delete savedBlog.id;
 
-    const blogsInDb = await helper.blogsInDb();   
+    const blogsInDb = await helper.blogsInDb();
     expect(blogsInDb).toHaveLength(helper.initialBlogs.length + 1);
     expect(savedBlog).toEqual(newBlog);
+  });
+
+  test("if the likes property is missing from the request, it will default to the value 0", async () => {
+    const newBlog = {
+      title: "fullstackopen-part4(withoutlikes)",
+      author: "Uni of H",
+      url: "https://fullstackopen.com/en/part4/testing_the_backend#exercises-4-8-4-12",
+    };
+
+    const response = await api.post("/api/blogs").send(newBlog);
+    const savedBlog = response.body;
+    delete savedBlog.id;
+
+    expect({ likes: savedBlog.likes }).toEqual({ likes: 0 });
   });
 });
 
