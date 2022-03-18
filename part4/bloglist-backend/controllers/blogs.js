@@ -1,61 +1,70 @@
-const userRouter = require('express').Router()
-const User = require('../models/blog')
+const blogRouter = require('express').Router()
+const Blog = require('../models/blog')
+const User = require('../models/user')
+// const logger = require('../utils/logger')
 
-userRouter.get('/', async (request, response, next) => {
+blogRouter.get('/', async (request, response, next) => {
   try {
-    const blogs = await User.find({})
+    const blogs = await Blog.find({})
     response.json(blogs)
   } catch (exception) {
     next(exception)
   }
 })
 
-userRouter.get('/:id', async (request, response, next) => {
+blogRouter.get('/:id', async (request, response, next) => {
   try {
-    const blog = await User.findById(request.params.id)
+    const blog = await Blog.findById(request.params.id)
     blog ? response.json(blog) : response.status(404).end()
   } catch (exception) {
     next(exception)
   }
 })
 
-userRouter.post('/', async (request, response, next) => {
+blogRouter.post('/', async (request, response, next) => {
   const body = request.body
-  const { title, author, url, likes } = request.body
+  const { title, author, url, likes, userId } = body
+  if (!title || !url) return response.status(400).json({ error: 'title or url is missing' }).end()
+  else if( !userId) return response.status(400).json({ error: 'user info is missing' }).end()
 
-  if (!(title && url)) return response.status(400).end()
+  const user = await User.findById(userId)
 
-  const blog = new User({
+  const blog = new Blog({
     title: title,
     author: author,
     url: url,
     likes: likes ? likes : 0,
+    user: user.id
   })
 
   try {
     const savedblog = await blog.save()
+
+    user.blogs = user.blogs.concat(savedblog.id)
+    await user.save()
+
     if (savedblog) response.json(savedblog)
   } catch (exception) {
     next(exception)
   }
 })
 
-userRouter.delete('/:id', async (request, response, next) => {
+blogRouter.delete('/:id', async (request, response, next) => {
   try {
-    await User.findByIdAndRemove(request.params.id)
+    await Blog.findByIdAndRemove(request.params.id)
     response.status(204).end()
   } catch (exception) {
     next(exception)
   }
 })
 
-userRouter.put('/:id', async (request, response, next) => {
+blogRouter.put('/:id', async (request, response, next) => {
 
   const { likes } = request.body
   if(!likes) return response.status(400).end()
 
   try {
-    const updatedBlog = await User.findByIdAndUpdate(request.params.id, { likes: 100 }, {
+    const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, { likes: 100 }, {
       new: true,
     })
     response.json(updatedBlog)
@@ -64,4 +73,4 @@ userRouter.put('/:id', async (request, response, next) => {
   }
 })
 
-module.exports = userRouter
+module.exports = blogRouter
