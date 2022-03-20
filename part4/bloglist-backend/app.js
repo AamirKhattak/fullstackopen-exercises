@@ -1,24 +1,24 @@
-const config = require('./utils/config')
-const express = require('express')
-const app = express()
-const cors = require('cors')
-var morgan = require('morgan')
-const blogRouter = require('./controllers/blogs')
-const userRouter = require('./controllers/users')
-const loginRouter = require('./controllers/login')
-const middleware = require('./utils/middleware')
-const logger = require('./utils/logger')
-const mongoose = require('mongoose')
+const config = require('./utils/config');
+const express = require('express');
+const app = express();
+const cors = require('cors');
+var morgan = require('morgan');
+const blogRouter = require('./controllers/blogs');
+const userRouter = require('./controllers/users');
+const loginRouter = require('./controllers/login');
+const middleware = require('./utils/middleware');
+const logger = require('./utils/logger');
+const mongoose = require('mongoose');
 
-logger.info('connecting to', config.MONGODB_URI)
+logger.info('connecting to', config.MONGODB_URI);
 
 mongoose.connect(config.MONGODB_URI)
   .then(() => {
-    logger.info('connected to MongoDB')
+    logger.info('connected to MongoDB');
   })
   .catch((error) => {
-    logger.error('error connection to MongoDB:', error.message)
-  })
+    logger.error('error connection to MongoDB:', error.message);
+  });
 
 
 // ###########################################################<start> MORGAN
@@ -27,11 +27,11 @@ app.use(
   morgan('tiny', {
     skip: (req) => req.method === 'POST',
   })
-)
+);
 
 morgan.token('body', (req) => {
-  return JSON.stringify(req.body)
-})
+  return JSON.stringify(req.body);
+});
 //only to log POST requests
 app.use(
   morgan(
@@ -40,23 +40,23 @@ app.use(
       skip: (req) => req.method !== 'POST',
     }
   )
-)
+);
 // ###########################################################<end> MORGAN
 
-app.use(cors())
-app.use(express.static('build'))
-app.use(express.json())
+app.use(cors());
+app.use(express.static('build'));
+app.use(express.json());
 
-app.use(middleware.requestLogger)
+app.use(middleware.requestLogger);
 
-app.use('/api/login', loginRouter)
-app.use('/api/users', userRouter)
+app.use('/api/login', loginRouter);
+app.use('/api/users', userRouter);
 
 
 // app.use(middleware.tokenExtractor)
-app.use('/api/blogs', blogRouter)
+app.use('/api/blogs', blogRouter);
 
-app.use(middleware.unknownEndpoint)
-app.use(middleware.errorHandler)
+app.use(middleware.unknownEndpoint);
+app.use(middleware.errorHandler);
 
-module.exports = app
+module.exports = app;

@@ -1,11 +1,10 @@
-const blogRouter = require("express").Router();
-const Blog = require("../models/blog");
-const User = require("../models/user");
+const blogRouter = require('express').Router();
+const Blog = require('../models/blog');
 const middleware = require('../utils/middleware');
 
-blogRouter.get("/", async (request, response, next) => {
+blogRouter.get('/', async (request, response, next) => {
   try {
-    const blogs = await Blog.find({}).populate("user", {
+    const blogs = await Blog.find({}).populate('user', {
       username: 1,
       name: 1,
       id: 1,
@@ -16,7 +15,7 @@ blogRouter.get("/", async (request, response, next) => {
   }
 });
 
-blogRouter.get("/:id", async (request, response, next) => {
+blogRouter.get('/:id', async (request, response, next) => {
   try {
     const blog = await Blog.findById(request.params.id);
     blog ? response.json(blog) : response.status(404).end();
@@ -25,14 +24,14 @@ blogRouter.get("/:id", async (request, response, next) => {
   }
 });
 
-blogRouter.post("/", middleware.tokenExtractor, middleware.userExtractor, async (request, response, next) => {
+blogRouter.post('/', middleware.tokenExtractor, middleware.userExtractor, async (request, response, next) => {
   const body = request.body;
 
   const { title, author, url, likes } = body;
   if (!title || !url)
     return response
       .status(400)
-      .json({ error: "title or url is missing" })
+      .json({ error: 'title or url is missing' })
       .end();
 
   try {
@@ -50,13 +49,13 @@ blogRouter.post("/", middleware.tokenExtractor, middleware.userExtractor, async 
     user.blogs = user.blogs.concat(savedblog.id);
     await user.save();
 
-    if (savedblog) response.json(savedblog);
+    if (savedblog) response.status(201).json(savedblog);
   } catch (exception) {
     next(exception);
   }
 });
 
-blogRouter.delete("/:id", middleware.tokenExtractor, middleware.userExtractor, async (request, response, next) => {
+blogRouter.delete('/:id', middleware.tokenExtractor, middleware.userExtractor, async (request, response, next) => {
   try {
     const blogToDeleteId = request.params.id;
     const user = request.user;
@@ -66,15 +65,15 @@ blogRouter.delete("/:id", middleware.tokenExtractor, middleware.userExtractor, a
       await Blog.findByIdAndRemove(request.params.id);
       return response.status(204).end();
     } else {
-      return response.status(401).json({error:"unauthorized to delete this blog"}).end();
+      return response.status(401).json({ error:'unauthorized to delete this blog' }).end();
     }
   } catch (exception) {
     next(exception);
-    
+
   }
 });
 
-blogRouter.put("/:id", async (request, response, next) => {
+blogRouter.put('/:id', async (request, response, next) => {
   const { likes } = request.body;
   if (!likes) return response.status(400).end();
 
