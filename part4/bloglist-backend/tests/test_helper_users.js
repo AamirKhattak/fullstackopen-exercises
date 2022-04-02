@@ -1,5 +1,7 @@
 const User = require("../models/user");
 
+const bcrypt = require("bcryptjs");
+
 const initialUsers = [
   {
     _id: "5a422a851b54a676234d17f7",
@@ -39,6 +41,21 @@ const initialUsers = [
   },
 ];
 
+const getInitialUsers = async() => {
+  let users = [];
+
+  for(let i=0; i<initialUsers.length; i++){
+    const curr = initialUsers[i];
+    const passwordHash = await bcrypt.hash(curr.password, 10);
+    const user = {
+      ...curr,
+      passwordHash,
+    };
+    users.push(user);
+  }
+  return users;
+};
+
 const usersInDb = async () => {
   const users = await User.find({});
   return users.map((user) => user.toJSON());
@@ -47,4 +64,5 @@ const usersInDb = async () => {
 module.exports = {
   usersInDb,
   initialUsers,
+  getInitialUsers,
 };
