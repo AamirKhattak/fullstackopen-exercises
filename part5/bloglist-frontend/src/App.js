@@ -49,7 +49,10 @@ const App = () => {
     window.localStorage.removeItem("loggedInUser");
   };
 
+<<<<<<< Updated upstream
   // TODO: Make the login 'permanent' by using the local storage.
+=======
+>>>>>>> Stashed changes
   if (user === null) {
     return (
       <div>
