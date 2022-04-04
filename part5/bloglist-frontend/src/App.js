@@ -7,15 +7,17 @@ import blogService from "./services/blogs";
 import Login from "./components/Login";
 import BlogForm from "./components/BlogForm";
 import Notification from "./components/Notification";
+import Togglable from "./components/Togglable";
 
+/*
+TODO: Modify the application to list the blog posts by the number of likes
+
+
+*/
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
   const [notification, setNotification] = useState(undefined);
-
-  useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
-  }, []);
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedInUser");
@@ -24,6 +26,14 @@ const App = () => {
       setUser(user);
       blogService.setToken(user.token);
     }
+  }, []);
+blogs.sort()
+  useEffect(() => {
+    blogService.getAll().then((blogs) => {
+      
+      blogs.sort((blogA, blogB) => blogB.likes - blogA.likes); //sorts blogs by likes in ascending order of likes
+      setBlogs(blogs);
+    });
   }, []);
 
   const onLogin = (userDetails) => {
@@ -49,10 +59,6 @@ const App = () => {
     window.localStorage.removeItem("loggedInUser");
   };
 
-<<<<<<< Updated upstream
-  // TODO: Make the login 'permanent' by using the local storage.
-=======
->>>>>>> Stashed changes
   if (user === null) {
     return (
       <div>
@@ -63,6 +69,23 @@ const App = () => {
     );
   }
 
+  const onBlogRemove = (removedBlog) => {
+    const blogsAfterRemove = blogs.filter(
+      (currBlog) => currBlog.id !== removedBlog.id
+    );
+    setBlogs(blogsAfterRemove);
+  };
+
+  const onBlogUpdate = (updatedBlog) => {
+    // const blogsAfterUpdate = blogs.filter(currBlog => currBlog.id !== updatedBlog.id);
+
+    const blogsAfterUpdate = blogs.map((currBlog) =>
+      currBlog.id === updatedBlog.id ? updatedBlog : currBlog
+    );
+    blogsAfterUpdate.sort((blogA, blogB) => blogB.likes - blogA.likes);
+    setBlogs(blogsAfterUpdate);
+  };
+
   return (
     <div>
       <h2>blogs</h2>
@@ -70,13 +93,20 @@ const App = () => {
       <p>
         {user.username} logged in <button onClick={handleLogout}>logout</button>
       </p>
-      <BlogForm
-        onBlogFormSubmit={onBlogFormSubmit}
-        handleNotification={handleNotification}
-      />
+      <Togglable buttonLabel="new note">
+        <BlogForm
+          onBlogFormSubmit={onBlogFormSubmit}
+          handleNotification={handleNotification}
+        />
+      </Togglable>
       <br />
       {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
+        <Blog
+          key={blog.id}
+          blog={blog}
+          onBlogRemove={onBlogRemove}
+          onBlogUpdate={onBlogUpdate}
+        />
       ))}
     </div>
   );
