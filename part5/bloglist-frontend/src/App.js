@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import "./App.css";
 import Blog from "./components/Blog";
@@ -19,6 +19,8 @@ const App = () => {
   const [user, setUser] = useState(null);
   const [notification, setNotification] = useState(undefined);
 
+  const blogFormRef = useRef();
+
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedInUser");
     if (loggedUserJSON) {
@@ -27,10 +29,9 @@ const App = () => {
       blogService.setToken(user.token);
     }
   }, []);
-blogs.sort()
+
   useEffect(() => {
     blogService.getAll().then((blogs) => {
-      
       blogs.sort((blogA, blogB) => blogB.likes - blogA.likes); //sorts blogs by likes in ascending order of likes
       setBlogs(blogs);
     });
@@ -38,13 +39,6 @@ blogs.sort()
 
   const onLogin = (userDetails) => {
     setUser(userDetails);
-    console.log(window.localStorage);
-  };
-
-  const onBlogFormSubmit = (newBlog) => {
-    if (newBlog) {
-      setBlogs(blogs.concat(newBlog));
-    }
   };
 
   const handleNotification = (notification, type = undefined) => {
@@ -68,6 +62,13 @@ blogs.sort()
       </div>
     );
   }
+
+  const onBlogFormSubmit = (newBlog) => {
+    if (newBlog) {
+      setBlogs(blogs.concat(newBlog));
+      blogFormRef.current.toggleVisibility();
+    }
+  };
 
   const onBlogRemove = (removedBlog) => {
     const blogsAfterRemove = blogs.filter(
@@ -93,7 +94,7 @@ blogs.sort()
       <p>
         {user.username} logged in <button onClick={handleLogout}>logout</button>
       </p>
-      <Togglable buttonLabel="new note">
+      <Togglable buttonLabel="new note" ref={blogFormRef}>
         <BlogForm
           onBlogFormSubmit={onBlogFormSubmit}
           handleNotification={handleNotification}
