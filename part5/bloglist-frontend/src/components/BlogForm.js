@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import blogsService from '../services/blogs';
 
+import PropTypes from 'prop-types';
+
 export default function BlogForm({ onBlogFormSubmit, handleNotification }) {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
@@ -12,7 +14,10 @@ export default function BlogForm({ onBlogFormSubmit, handleNotification }) {
     const newBlog = { title, author, url };
     try {
       const responseNewBlog = await blogsService.create(newBlog);
-      handleNotification(`a new blog ${responseNewBlog.title} by ${responseNewBlog.author} added.`, 'success');
+      handleNotification(
+        `a new blog ${responseNewBlog.title} by ${responseNewBlog.author} added.`,
+        'success'
+      );
       onBlogFormSubmit(responseNewBlog);
       setTitle('');
       setAuthor('');
@@ -58,3 +63,8 @@ export default function BlogForm({ onBlogFormSubmit, handleNotification }) {
     </div>
   );
 }
+
+BlogForm.propTypes = {
+  onBlogFormSubmit: PropTypes.func.isRequired,
+  handleNotification: PropTypes.func,
+};

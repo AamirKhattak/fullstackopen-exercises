@@ -9,11 +9,8 @@ export default function Login({ onLogin, handleNotification }) {
 
   const handleLogin = async (event) => {
     event.preventDefault();
-    console.log(username, password);
-
     try {
       const userToken = await loginService.login({ username, password });
-      console.log(userToken);
       onLogin(userToken);
       window.localStorage.setItem('loggedInUser', JSON.stringify(userToken));
       blogsService.setToken(userToken.token);

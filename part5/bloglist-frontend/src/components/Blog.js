@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import PropTypes from 'prop-types';
 
 import blogService from '../services/blogs';
 
@@ -66,6 +67,12 @@ const Blog = ({ blog, onBlogRemove, onBlogUpdate }) => {
       <button onClick={toggleVisiblity}>view</button>
     </div>
   );
+};
+
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired,
+  onBlogRemove: PropTypes.func.isRequired,
+  onBlogUpdate: PropTypes.func.isRequired,
 };
 
 export default Blog;
