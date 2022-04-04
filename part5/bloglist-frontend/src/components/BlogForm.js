@@ -1,10 +1,10 @@
-import React, { useState } from "react";
-import blogsService from "../services/blogs";
+import React, { useState } from 'react';
+import blogsService from '../services/blogs';
 
 export default function BlogForm({ onBlogFormSubmit, handleNotification }) {
-  const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
-  const [url, setURL] = useState("");
+  const [title, setTitle] = useState('');
+  const [author, setAuthor] = useState('');
+  const [url, setURL] = useState('');
 
   const handleCreate = async (event) => {
     event.preventDefault();
@@ -12,11 +12,11 @@ export default function BlogForm({ onBlogFormSubmit, handleNotification }) {
     const newBlog = { title, author, url };
     try {
       const responseNewBlog = await blogsService.create(newBlog);
-      handleNotification(`a new blog ${responseNewBlog.title} by ${responseNewBlog.author} added.`, 'success')
+      handleNotification(`a new blog ${responseNewBlog.title} by ${responseNewBlog.author} added.`, 'success');
       onBlogFormSubmit(responseNewBlog);
-      setTitle("");
-      setAuthor("");
-      setURL("");
+      setTitle('');
+      setAuthor('');
+      setURL('');
     } catch (error) {
       handleNotification(error.message);
     }
@@ -34,7 +34,7 @@ export default function BlogForm({ onBlogFormSubmit, handleNotification }) {
             name="Title"
             onChange={({ target }) => setTitle(target.value)}
           />
-        </div>{" "}
+        </div>{' '}
         <div>
           Author
           <input

@@ -1,13 +1,13 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from 'react';
 
-import "./App.css";
-import Blog from "./components/Blog";
-import blogService from "./services/blogs";
+import './App.css';
+import Blog from './components/Blog';
+import blogService from './services/blogs';
 
-import Login from "./components/Login";
-import BlogForm from "./components/BlogForm";
-import Notification from "./components/Notification";
-import Togglable from "./components/Togglable";
+import Login from './components/Login';
+import BlogForm from './components/BlogForm';
+import Notification from './components/Notification';
+import Togglable from './components/Togglable';
 
 /*
 TODO: Modify the application to list the blog posts by the number of likes
@@ -22,7 +22,7 @@ const App = () => {
   const blogFormRef = useRef();
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem("loggedInUser");
+    const loggedUserJSON = window.localStorage.getItem('loggedInUser');
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
       setUser(user);
@@ -50,7 +50,7 @@ const App = () => {
 
   const handleLogout = () => {
     setUser(null);
-    window.localStorage.removeItem("loggedInUser");
+    window.localStorage.removeItem('loggedInUser');
   };
 
   if (user === null) {

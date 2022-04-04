@@ -1,12 +1,12 @@
-import { useState } from "react";
+import { useState } from 'react';
 
-import blogService from "../services/blogs";
+import blogService from '../services/blogs';
 
 const Blog = ({ blog, onBlogRemove, onBlogUpdate }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
-    border: "solid",
+    border: 'solid',
     borderWidth: 1,
     marginBottom: 5,
   };

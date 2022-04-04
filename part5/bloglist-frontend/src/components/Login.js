@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import blogsService from "../services/blogs";
+import React, { useState } from 'react';
+import blogsService from '../services/blogs';
 
-import loginService from "../services/login";
+import loginService from '../services/login';
 
-export default function Login({onLogin, handleNotification}) {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+export default function Login({ onLogin, handleNotification }) {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -15,10 +15,10 @@ export default function Login({onLogin, handleNotification}) {
       const userToken = await loginService.login({ username, password });
       console.log(userToken);
       onLogin(userToken);
-      window.localStorage.setItem('loggedInUser', JSON.stringify(userToken))
+      window.localStorage.setItem('loggedInUser', JSON.stringify(userToken));
       blogsService.setToken(userToken.token);
     } catch (error) {
-      handleNotification('wrong username or password')
+      handleNotification('wrong username or password');
     }
   };
 
@@ -33,7 +33,7 @@ export default function Login({onLogin, handleNotification}) {
             name="Username"
             onChange={({ target }) => setUsername(target.value)}
           />
-        </div>{" "}
+        </div>{' '}
         <div>
           password
           <input
