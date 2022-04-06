@@ -1,30 +1,19 @@
 import React, { useState } from 'react';
-import blogsService from '../services/blogs';
 
 import PropTypes from 'prop-types';
 
-export default function BlogForm({ onBlogFormSubmit, handleNotification }) {
+export default function BlogForm({ onBlogFormSubmit }) {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [url, setURL] = useState('');
 
   const handleCreate = async (event) => {
     event.preventDefault();
-    // console.log(username, password);
     const newBlog = { title, author, url };
-    try {
-      const responseNewBlog = await blogsService.create(newBlog);
-      handleNotification(
-        `a new blog ${responseNewBlog.title} by ${responseNewBlog.author} added.`,
-        'success'
-      );
-      onBlogFormSubmit(responseNewBlog);
-      setTitle('');
-      setAuthor('');
-      setURL('');
-    } catch (error) {
-      handleNotification(error.message);
-    }
+    onBlogFormSubmit(newBlog);
+    setTitle('');
+    setAuthor('');
+    setURL('');
   };
 
   return (
@@ -37,6 +26,7 @@ export default function BlogForm({ onBlogFormSubmit, handleNotification }) {
             type="text"
             value={title}
             name="Title"
+            placeholder="title"
             onChange={({ target }) => setTitle(target.value)}
           />
         </div>{' '}
@@ -46,6 +36,7 @@ export default function BlogForm({ onBlogFormSubmit, handleNotification }) {
             type="text"
             value={author}
             name="Author"
+            placeholder="author"
             onChange={({ target }) => setAuthor(target.value)}
           />
         </div>
@@ -55,6 +46,7 @@ export default function BlogForm({ onBlogFormSubmit, handleNotification }) {
             type="text"
             value={url}
             name="Url"
+            placeholder="url"
             onChange={({ target }) => setURL(target.value)}
           />
         </div>

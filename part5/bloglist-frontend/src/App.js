@@ -63,10 +63,18 @@ const App = () => {
     );
   }
 
-  const onBlogFormSubmit = (newBlog) => {
-    if (newBlog) {
-      setBlogs(blogs.concat(newBlog));
+  const onBlogFormSubmit = async (newBlog) => {
+    try {
+      const responseNewBlog = await blogService.create(newBlog);
+      setBlogs(blogs.concat(responseNewBlog));
       blogFormRef.current.toggleVisibility();
+
+      handleNotification(
+        `a new blog ${responseNewBlog.title} by ${responseNewBlog.author} added.`,
+        'success'
+      );
+    } catch (error) {
+      handleNotification(error.message);
     }
   };
 
@@ -107,10 +115,7 @@ const App = () => {
         {user.username} logged in <button onClick={handleLogout}>logout</button>
       </p>
       <Togglable buttonLabel="new note" ref={blogFormRef}>
-        <BlogForm
-          onBlogFormSubmit={onBlogFormSubmit}
-          handleNotification={handleNotification}
-        />
+        <BlogForm onBlogFormSubmit={onBlogFormSubmit} />
       </Togglable>
       <br />
       {blogs.map((blog) => (
