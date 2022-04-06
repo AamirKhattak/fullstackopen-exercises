@@ -1,3 +1,122 @@
+# PART 5 - Testing React apps
+
+## (c) Resting React Apps
+
+There are many different ways of testing React applications. Let's take a look at them next.
+
+Tests will be implemented with the same [Jest](http://jestjs.io/) testing library developed by Facebook that was used in the previous part. Jest is actually configured by default to applications created with create-react-app.
+
+In addition to Jest, we also need another testing library that will help us render components for testing purposes. The current best option for this is [react-testing-library](https://github.com/testing-library/react-testing-library) which has seen rapid growth in popularity in recent times.
+```
+npm install --save-dev @testing-library/react @testing-library/jest-dom
+```
+[jest-dom](https://testing-library.com/docs/ecosystem-jest-dom/) that provides some nice Jest-related helper methods.
+
+
+
+----------
+## (a) Login in Frontend
+
+- conditional rendering
+
+```
+      //If the first statement evaluates to false, or is falsy, the second statement (generating the form) is not executed at all.
+      {user === null && loginForm()}
+      {user !== null && noteForm()}
+```
+
+- sending user auth token with requests
+
+```
+const setToken = newToken => {
+  token = `bearer ${newToken}`
+}
+
+const getAll = () => {
+  const request = axios.get(baseUrl)
+  return request.then(response => response.data)
+}
+
+const create = async newObject => {
+  const config = {
+    headers: { Authorization: token },
+  }
+
+  const response = await axios.post(baseUrl, newObject, config)
+  return response.data
+}
+```
+
+- Saving the token to the browser's local storage
+  `window.localStorage.setItem( 'loggedNoteappUser', JSON.stringify(user) ) `
+  `const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')`
+  `window.localStorage.removeItem('loggedNoteappUser')`
+  `window.localStorage.clear() //empties localstorage completely:`
+- displaying notifications
+
+## (b) props.children and proptypes
+
+- conditional rendering, displaying forms when appropriate
+- The components children, aka. **props.children**
+  - Togglable Component
+
+```
+import { useState } from 'react'
+
+const Togglable = (props) => {
+  const [visible, setVisible] = useState(false)
+
+  const hideWhenVisible = { display: visible ? 'none' : '' }
+  const showWhenVisible = { display: visible ? '' : 'none' }
+
+  const toggleVisibility = () => {
+    setVisible(!visible)
+  }
+
+  return (
+    <div>
+      <div style={hideWhenVisible}>
+        <button onClick={toggleVisibility}>{props.buttonLabel}</button>
+      </div>
+      <div style={showWhenVisible}>
+        {props.children}
+        <button onClick={toggleVisibility}>cancel</button>
+      </div>
+    </div>
+  )
+}
+
+export default Togglable
+```
+
+- References to components with ref
+    - [useRef](https://reactjs.org/docs/hooks-reference.html#useref), [forwardRef](https://reactjs.org/docs/react-api.html#reactforwardref), [useImperativeHandle](https://reactjs.org/docs/hooks-reference.html#useimperativehandle)
+- PropTypes
+```
+import PropTypes from 'prop-types'
+
+const Togglable = React.forwardRef((props, ref) => {
+  // ..
+})
+
+Togglable.propTypes = {
+  buttonLabel: PropTypes.string.isRequired
+}
+```
+
+
+
+
+
+
+
+
+
+
+----------
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

@@ -70,21 +70,33 @@ const App = () => {
     }
   };
 
-  const onBlogRemove = (removedBlog) => {
-    const blogsAfterRemove = blogs.filter(
-      (currBlog) => currBlog.id !== removedBlog.id
-    );
-    setBlogs(blogsAfterRemove);
+  const onBlogRemove = async (blogToBeRemoved) => {
+    try {
+      await blogService.remove(blogToBeRemoved.id);
+      const blogsAfterRemove = blogs.filter(
+        (currBlog) => currBlog.id !== blogToBeRemoved.id
+      );
+      setBlogs(blogsAfterRemove);
+    } catch (error) {
+      alert(`${error.message} \n ${error.config.method} ${error.config.url}`);
+    }
   };
 
-  const onBlogUpdate = (updatedBlog) => {
-    // const blogsAfterUpdate = blogs.filter(currBlog => currBlog.id !== updatedBlog.id);
+  const onBlogUpdate = async (blogToBeUpdated) => {
+    try {
+      const updatedBlog = await blogService.update(
+        blogToBeUpdated.id,
+        blogToBeUpdated
+      );
 
-    const blogsAfterUpdate = blogs.map((currBlog) =>
-      currBlog.id === updatedBlog.id ? updatedBlog : currBlog
-    );
-    blogsAfterUpdate.sort((blogA, blogB) => blogB.likes - blogA.likes);
-    setBlogs(blogsAfterUpdate);
+      const blogsAfterUpdate = blogs.map((currBlog) =>
+        currBlog.id === updatedBlog.id ? updatedBlog : currBlog
+      );
+      blogsAfterUpdate.sort((blogA, blogB) => blogB.likes - blogA.likes);
+      setBlogs(blogsAfterUpdate);
+    } catch (error) {
+      alert(error);
+    }
   };
 
   return (
