@@ -28,6 +28,7 @@ export default function Login({ onLogin, handleNotification }) {
             type="text"
             value={username}
             name="Username"
+            id="username"
             onChange={({ target }) => setUsername(target.value)}
           />
         </div>{' '}
@@ -37,10 +38,13 @@ export default function Login({ onLogin, handleNotification }) {
             type="password"
             value={password}
             name="Password"
+            id="password"
             onChange={({ target }) => setPassword(target.value)}
           />
         </div>
-        <button>login</button>
+        <button id="login-btn" type="submit">
+          login
+        </button>
       </form>
     </div>
   );

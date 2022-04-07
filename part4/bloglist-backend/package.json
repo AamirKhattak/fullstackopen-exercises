@@ -9,7 +9,8 @@
     "lint": "eslint .",
     "test": "cross-env NODE_ENV=test jest --verbose --runInBand --forceExit",
     "test:blog_api": "npm test -- tests/blog_api.test.js",
-    "test:user_api": "npm test -- tests/user_api.test.js"
+    "test:user_api": "npm test -- tests/user_api.test.js",
+    "start:test": "cross-env NODE_ENV=test node index.js"
   },
   "author": "",
   "license": "ISC",

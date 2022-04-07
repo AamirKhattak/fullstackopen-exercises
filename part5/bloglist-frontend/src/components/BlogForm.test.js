@@ -9,7 +9,7 @@ describe('BlogForm.js', () => {
     const mockOnBlogFormSubmit = jest.fn();
 
     render(<BlogForm handleNotification={() => {}} onBlogFormSubmit={mockOnBlogFormSubmit} />);
-    
+
     const inputTitle = screen.getByPlaceholderText('title');
     const inputAuthor = screen.getByPlaceholderText('author');
     const inputURL = screen.getByPlaceholderText('url');
@@ -21,7 +21,7 @@ describe('BlogForm.js', () => {
     userEvent.click(createButton);
 
     expect(mockOnBlogFormSubmit.mock.calls).toHaveLength(1);
-        
+
     expect(mockOnBlogFormSubmit.mock.calls[0][0].title).toBe('testing a form...');
     expect(mockOnBlogFormSubmit.mock.calls[0][0].author).toBe('temp Author');
     expect(mockOnBlogFormSubmit.mock.calls[0][0].url).toBe('test.localhost.com/temp');
