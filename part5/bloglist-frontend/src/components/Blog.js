@@ -51,8 +51,8 @@ const Blog = ({ blog, onBlogRemove, onBlogUpdate }) => {
           {blog.title} <button onClick={toggleVisiblity}>hide</button>
         </p>
         <p>{blog.url}</p>
-        <p>
-          {blog.likes}
+        <p className='likes'>
+          <span>{blog.likes}</span>
           <button onClick={handleOnLike}>like</button>
         </p>
         <p>{blog.author}</p>

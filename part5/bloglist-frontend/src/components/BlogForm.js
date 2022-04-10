@@ -27,6 +27,7 @@ export default function BlogForm({ onBlogFormSubmit }) {
             value={title}
             name="Title"
             placeholder="title"
+            id="title"
             onChange={({ target }) => setTitle(target.value)}
           />
         </div>{' '}
@@ -37,6 +38,7 @@ export default function BlogForm({ onBlogFormSubmit }) {
             value={author}
             name="Author"
             placeholder="author"
+            id="author"
             onChange={({ target }) => setAuthor(target.value)}
           />
         </div>
@@ -47,10 +49,11 @@ export default function BlogForm({ onBlogFormSubmit }) {
             value={url}
             name="Url"
             placeholder="url"
+            id="url"
             onChange={({ target }) => setURL(target.value)}
           />
         </div>
-        <button>create</button>
+        <button id='create-btn' type='submit'>create</button>
       </form>
     </div>
   );
