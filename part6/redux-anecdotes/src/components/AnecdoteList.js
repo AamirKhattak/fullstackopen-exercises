@@ -7,14 +7,20 @@ import {
 } from "../reducers/notificationReducer";
 
 export default function AnecdoteList() {
-  const anecdotes = useSelector(({ anecdote }) =>
-    anecdote.sort((a, b) => b.votes - a.votes)
-  );
+  const anecdotes = useSelector((state) => {
+    const filter = state.filter.toLowerCase();
+    console.log(filter);
+
+    let anecdote = state.anecdote.filter((anecdote) =>
+      anecdote.content.toLowerCase().includes(filter)
+    );
+    return anecdote.sort((a, b) => b.votes - a.votes);
+  });
   const dispatch = useDispatch();
 
   const vote = (id, anecdote) => {
     console.log("vote", id);
-    
+
     dispatch(createNotification(`you voted '${anecdote}'`));
     dispatch(voteAnecdote(id));
     // create/remove notification
