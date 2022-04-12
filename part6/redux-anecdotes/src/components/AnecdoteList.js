@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { setAnecdote, voteAnecdote } from "../reducers/anecdoteReducer";
+import { setAnecdote, voteAnecdote, initializeAnecdotes  } from "../reducers/anecdoteReducer";
 import anecdotesService from "../services/anecdotes";
 
 import {
@@ -12,7 +12,7 @@ export default function AnecdoteList() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    anecdotesService.getAll().then((anecdotes) => dispatch(setAnecdote(anecdotes)));
+    dispatch(initializeAnecdotes());
   }, []);
 
   const anecdotes = useSelector((state) => {
@@ -24,9 +24,9 @@ export default function AnecdoteList() {
     return anecdote.sort((a, b) => b.votes - a.votes);
   });
 
-  const vote = (id, anecdote) => {
-    dispatch(createNotification(`you voted '${anecdote}'`));
-    dispatch(voteAnecdote(id));
+  const vote = (anecdote) => {
+    dispatch(createNotification(`you voted '${anecdote.content}'`));
+    dispatch(voteAnecdote(anecdote));
     // create/remove notification
     setTimeout(() => {
       dispatch(removeNotification());
@@ -41,7 +41,7 @@ export default function AnecdoteList() {
           <div>{anecdote.content}</div>
           <div>
             has {anecdote.votes}
-            <button onClick={() => vote(anecdote.id, anecdote.content)}>
+            <button onClick={() => vote(anecdote)}>
               vote
             </button>
           </div>
