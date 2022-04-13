@@ -11,7 +11,8 @@ function AnecdoteList(props) {
   const {anecdotes} = props;
 
   const vote = (anecdote) => {
-    props.setNotification(`you voted '${anecdote.content}'`, 5);
+    const previosNotificationTimeOutID = props.notificationTimeOutID;
+    props.setNotification(`you voted '${anecdote.content}'`, 5, previosNotificationTimeOutID);
     props.voteAnecdote(anecdote);
   };
 
@@ -38,12 +39,15 @@ const mapDispatchToProps = {
 };
 
 const mapStateToProps = (state) => {
+  console.log(state);
+  
   const filter = state.filter.toLowerCase();
   let anecdotes = state.anecdote.filter((anecdote) =>
     anecdote.content.toLowerCase().includes(filter)
   );
   return {
     anecdotes: anecdotes.sort((a, b) => b.votes - a.votes),
+    notificationTimeOutID: state.notification.timeoutID
   };
 };
 

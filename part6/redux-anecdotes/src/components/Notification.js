@@ -1,9 +1,9 @@
 import { connect } from "react-redux";
 
 const Notification = ({notification}) => {
-  // const notification = props.notification;
+  const notificationText = notification.notificationText;
 
-  console.log("notification", notification);
+  console.log("notification", notificationText);
 
   const style = {
     border: "solid",
@@ -11,9 +11,9 @@ const Notification = ({notification}) => {
     borderWidth: 1,
   };
 
-  if (!notification) return <span></span>;
+  if (!notificationText) return <span></span>;
 
-  return <div style={style}>{notification}</div>;
+  return <div style={style}>{notificationText}</div>;
 };
 
 const mapStateToProps = (state) => {
