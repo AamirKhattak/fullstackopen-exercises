@@ -4,6 +4,26 @@
 // If you're unfamiliar with how Cypress works,
 // check out the link below and learn how to write your first test:
 // https://on.cypress.io/writing-first-test
+const blogs = [
+  {
+    title: "1st blog cypress",
+    author: "cypress-bot",
+    url: "localhost.com/123",
+    likes: 0,
+  },
+  {
+    title: "2nd blog cypress",
+    author: "cypress-bot",
+    url: "localhost.com/123",
+    likes: 100,
+  },
+  {
+    title: "3rd blog cypress",
+    author: "cypress-bot",
+    url: "localhost.com/123",
+    likes: 50,
+  },
+];
 
 describe("Blog app", function () {
   beforeEach(function () {
@@ -74,53 +94,32 @@ describe("Blog app", function () {
 
     describe("and a note exists", function () {
       beforeEach(function () {
-        cy.createBlog({
-          title: "1st blog cypress",
-          author: "cypress-bot",
-          url: "localhost.com/123",
-          likes: 0,
-        });
-        cy.createBlog({
-          title: "2nd blog cypress",
-          author: "cypress-bot",
-          url: "localhost.com/123",
-          likes: 100,
-        });
-        cy.createBlog({
-          title: "3rd blog cypress",
-          author: "cypress-bot",
-          url: "localhost.com/123",
-          likes: 0,
-        });
+        blogs.forEach((blog) => cy.createBlog(blog));
       });
+
       it("it can be liked(5.20)", async () => {
-        cy.contains("2nd blog cypress cypress-bot")
+        const blogForTesting = blogs[2];
+
+        cy.contains(blogForTesting.title)
           .as("concernedBlog")
           .find("button")
           .click();
 
-        let likesAtStart = -1,
-          likesAtEnd = -1;
+        let likesAtStart = blogForTesting.likes,
+          likesAtEnd = likesAtStart + 1;
 
+        cy.get("@concernedBlog").get(".likes>span");
 
-        cy.get("@concernedBlog")
-          .get(".likes>span")
-          .then((likes) => {
-            likesAtStart = likes.text();
-          });
         cy.get("@concernedBlog")
           .get(".likes>button")
           .as("concernedBlogLikesBtn");
 
         cy.get("@concernedBlogLikesBtn").click();
 
-        cy.contains("2nd blog cypress")
+        cy.contains(blogForTesting.title)
           .parent()
           .get(".likes>span")
-          .then((likes) => {
-            likesAtEnd = likes.text();
-            console.log(likesAtStart, likesAtEnd);
-          });
+          .contains(likesAtEnd);
       });
     });
   });
@@ -128,5 +127,5 @@ describe("Blog app", function () {
 
 /**
  * TODO: 5.20 partialiy completed, comparision of likes before and after pending
- * TODO: 5.21, 5.22 
+ * TODO: 5.21, 5.22
  */
