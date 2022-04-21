@@ -124,11 +124,24 @@ describe("Blog app", function () {
           cy.contains(blogForTesting.title).parent().contains("hide").click();
         });
       });
+
+      it("the user who created a blog can delete it.(5.21)", async () => {
+        const blogForTesting = blogs[2];
+        // blogs.forEach((blogForTesting) => {
+          cy.contains(blogForTesting.title)
+            .as("concernedBlog")
+            .contains("view")
+            .click();
+
+          cy.get("@concernedBlog").contains('remove').click();
+
+          cy.get(blogForTesting.title).should('not.exist');
+        // });
+      });
     });
   });
 });
 
 /**
- * TODO: 5.20 partialiy completed, comparision of likes before and after pending
  * TODO: 5.21, 5.22
  */

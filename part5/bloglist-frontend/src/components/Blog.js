@@ -31,12 +31,12 @@ const Blog = ({ blog, onBlogRemove, onBlogUpdate }) => {
       onBlogRemove(blog);
     }
   };
-
+  console.log(blog);
   const checkIfUserIsCreatorOfBlog = () => {
     const loggedInUser = window.localStorage.loggedInUser
       ? JSON.parse(window.localStorage.loggedInUser)
       : undefined;
-
+    console.log(loggedInUser);
     if (loggedInUser) {
       return blog.user.username === loggedInUser.username;
     } else {
@@ -51,7 +51,7 @@ const Blog = ({ blog, onBlogRemove, onBlogUpdate }) => {
           {blog.title} <button onClick={toggleVisiblity}>hide</button>
         </p>
         <p>{blog.url}</p>
-        <p className='likes'>
+        <p className="likes">
           <span>{blog.likes}</span>
           <button onClick={handleOnLike}>like</button>
         </p>
