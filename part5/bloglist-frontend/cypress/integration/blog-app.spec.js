@@ -98,28 +98,31 @@ describe("Blog app", function () {
       });
 
       it("it can be liked(5.20)", async () => {
-        const blogForTesting = blogs[2];
+        // const blogForTesting = blogs[2];
+        blogs.forEach((blogForTesting) => {
+          cy.contains(blogForTesting.title)
+            .as("concernedBlog")
+            .find("button")
+            .click();
 
-        cy.contains(blogForTesting.title)
-          .as("concernedBlog")
-          .find("button")
-          .click();
+          let likesAtStart = blogForTesting.likes,
+            likesAtEnd = likesAtStart + 1;
 
-        let likesAtStart = blogForTesting.likes,
-          likesAtEnd = likesAtStart + 1;
+          cy.get("@concernedBlog").get(".likes>span");
 
-        cy.get("@concernedBlog").get(".likes>span");
+          cy.get("@concernedBlog")
+            .get(".likes>button")
+            .as("concernedBlogLikesBtn");
 
-        cy.get("@concernedBlog")
-          .get(".likes>button")
-          .as("concernedBlogLikesBtn");
+          cy.get("@concernedBlogLikesBtn").click();
 
-        cy.get("@concernedBlogLikesBtn").click();
+          cy.contains(blogForTesting.title)
+            .parent()
+            .get(".likes>span")
+            .contains(likesAtEnd);
 
-        cy.contains(blogForTesting.title)
-          .parent()
-          .get(".likes>span")
-          .contains(likesAtEnd);
+          cy.contains(blogForTesting.title).parent().contains("hide").click();
+        });
       });
     });
   });
