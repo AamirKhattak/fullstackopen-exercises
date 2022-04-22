@@ -118,14 +118,16 @@ const App = () => {
         <BlogForm onBlogFormSubmit={onBlogFormSubmit} />
       </Togglable>
       <br />
-      {blogs.map((blog) => (
-        <Blog
-          key={blog.id}
-          blog={blog}
-          onBlogRemove={onBlogRemove}
-          onBlogUpdate={onBlogUpdate}
-        />
-      ))}
+      <div className="blogs">
+        {blogs.map((blog) => (
+          <Blog
+            key={blog.id}
+            blog={blog}
+            onBlogRemove={onBlogRemove}
+            onBlogUpdate={onBlogUpdate}
+          />
+        ))}
+      </div>
     </div>
   );
 };

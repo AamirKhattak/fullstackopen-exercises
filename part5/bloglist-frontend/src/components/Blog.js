@@ -31,12 +31,11 @@ const Blog = ({ blog, onBlogRemove, onBlogUpdate }) => {
       onBlogRemove(blog);
     }
   };
-  console.log(blog);
+
   const checkIfUserIsCreatorOfBlog = () => {
     const loggedInUser = window.localStorage.loggedInUser
       ? JSON.parse(window.localStorage.loggedInUser)
       : undefined;
-    console.log(loggedInUser);
     if (loggedInUser) {
       return blog.user.username === loggedInUser.username;
     } else {
