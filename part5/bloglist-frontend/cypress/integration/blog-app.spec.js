@@ -9,7 +9,7 @@ const blogs = [
     title: "1st blog cypress",
     author: "cypress-bot",
     url: "localhost.com/123",
-    likes: 1,
+    likes: 10,
   },
   {
     title: "2nd blog cypress",
@@ -27,13 +27,13 @@ const blogs = [
     title: "4rd blog cypress",
     author: "cypress-bot",
     url: "localhost.com/123",
-    likes: 3,
+    likes: 5,
   },
   {
     title: "5rd blog cypress",
     author: "cypress-bot",
     url: "localhost.com/123",
-    likes: 3,
+    likes: 5,
   },
 ];
 
@@ -84,7 +84,7 @@ describe("Blog app", function () {
     });
   });
 
-  describe.only("When logged in", function () {
+  describe("When logged in", function () {
     //excercise 5.19
     beforeEach(function () {
       // log in user here
@@ -98,93 +98,88 @@ describe("Blog app", function () {
       cy.get("#url").type("cypress.com");
       cy.get("#create-btn").click();
 
-      cy.contains(
+      cy.get(".success").should(
+        "contain",
         "a new blog introduction to cypress testing by cypress-bot added."
       );
-      cy.contains("introduction to cypress testing cypress-botview");
+      cy.get(".blogStyle").should(
+        "contain",
+        "introduction to cypress testing cypress-botview"
+      );
+    });
+  });
+
+  describe("and a note exists", function () {
+    beforeEach(function () {
+      // log in user here
+      cy.login({ username: "aamirKhattak", password: "aamirKhattak" });
     });
 
-    describe("and a note exists", function () {
-      beforeEach(function () {
-        blogs.forEach((blog) => cy.createBlog(blog));
+    beforeEach(function () {
+      blogs.forEach((blog) => cy.createBlog(blog));
+    });
+
+    it("it can be liked(5.20)", () => {
+      // const blogForTesting = blogs[2];
+      blogs.forEach((blogForTesting) => {
+        cy.contains(blogForTesting.title)
+          .as("concernedBlog")
+          .contains("view")
+          .click();
+
+        let likesAtStart = blogForTesting.likes,
+          likesAtEnd = likesAtStart + 1;
+
+        cy.get("@concernedBlog").get(".likes>span");
+
+        cy.get("@concernedBlog")
+          .get(".likes>button")
+          .as("concernedBlogLikesBtn");
+
+        cy.get("@concernedBlogLikesBtn").click();
+
+        cy.contains(blogForTesting.title)
+          .parent()
+          .get(".likes>span")
+          .contains(likesAtEnd);
+
+        cy.contains(blogForTesting.title).parent().contains("hide").click();
+      });
+    });
+
+    it("the user who created a blog can delete it.(5.21)", () => {
+      const blogForTesting = blogs[2];
+      // blogs.forEach((blogForTesting) => {
+      cy.contains(blogForTesting.title)
+        .as("concernedBlog")
+        .contains("view")
+        .click();
+
+      cy.get("@concernedBlog").contains("remove").click();
+
+      // cy.get(blogForTesting.title).should("not.exist");
+      cy.get("html").should("not.contain", blogForTesting.title);
+    });
+
+    it("blogs are ordered according to likes with the blog with the most likes being first(5.22)", () => {
+      // blogs.forEach((blogForTesting) => {
+      const likes = [];
+      blogs.forEach((blogForTesting) => {
+        cy.contains(blogForTesting.title)
+          .as("concernedBlog")
+          .contains("view")
+          .click();
+        cy.get("@concernedBlog").get(".likes>button").click();
+        cy.wait(500);
+
+        cy.contains(blogForTesting.title).parent().contains("hide").click();
       });
 
-      // it('it can be liked(5.20)', async () => {
-      //   // const blogForTesting = blogs[2];
-      //   blogs.forEach((blogForTesting) => {
-      //     cy.contains(blogForTesting.title)
-      //       .as('concernedBlog')
-      //       .contains('view')
-      //       .click();
-      //     console.log(123);
-
-      //     let likesAtStart = blogForTesting.likes,
-      //       likesAtEnd = likesAtStart + 1;
-
-      //     cy.get('@concernedBlog').get('.likes>span');
-
-      //     cy.get('@concernedBlog')
-      //       .get('.likes>button')
-      //       .as('concernedBlogLikesBtn');
-
-      //     cy.get('@concernedBlogLikesBtn').click();
-
-      //     cy.contains(blogForTesting.title)
-      //       .parent()
-      //       .get('.likes>span')
-      //       .contains(likesAtEnd);
-
-      //     cy.contains(blogForTesting.title).parent().contains('hide').click();
-      //   });
-      // });
-
-      // it('the user who created a blog can delete it.(5.21)', async () => {
-      //   const blogForTesting = blogs[2];
-      //   // blogs.forEach((blogForTesting) => {
-      //   cy.contains(blogForTesting.title)
-      //     .as('concernedBlog')
-      //     .contains('view')
-      //     .click();
-
-      //   cy.get('@concernedBlog').contains('remove').click();
-
-      //   cy.get(blogForTesting.title).should('not.exist');
-      //   // });
-      // });
-
-      it("blogs are ordered according to likes with the blog with the most likes being first(5.22)", async () => {
-        // blogs.forEach((blogForTesting) => {
-        const likes = [];
-        cy.get(".blogs")
-          .children()
-          .then(($blogs) => {
-            console.log($blogs);
-            $blogs.forEach((e) => {
-              console.log(e);
-              cy.get(e).contains("view").click();
-              cy.get(e)
-                .get(".likes>span")
-                .then((val) => {
-                  console.log(val.text());
-                  likes.push(val.text())
-                  console.log(likes);
-                });
-                console.log(likes);
-            });           
-          });
-
-        // })
-
-        // cy.contains(blogForTesting.title)
-        //   .as('concernedBlog')
-        //   .contains('view')
-        //   .click();
-
-        // cy.get('@concernedBlog').contains('remove').click();
-
-        // cy.get(blogForTesting.title).should('not.exist');
-        // });
-      });
+      cy.get(".blogStyle").eq(0).should("contain", blogs[0].title);
+      cy.get(".blogStyle").eq(1).should("contain", blogs[3].title);
+      cy.get(".blogStyle").eq(2).should("contain", blogs[4].title);
+      cy.get(".blogStyle").eq(3).should("contain", blogs[2].title);
+      cy.get(".blogStyle").eq(4).should("contain", blogs[1].title);
     });
   });
 });
